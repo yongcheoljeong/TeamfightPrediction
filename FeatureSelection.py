@@ -9,14 +9,14 @@ selected_index = [
 ]
 
 selected_features = [
+    'Cooldown1%/s',
+    'Cooldown2%/s', 
+    'CooldownCrouching%/s',
+    'CooldownSecondaryFire%/s',
     'TF_order',
     'TF_winner',
     'TF_RCP_sum',
     'UltimateCharge',
-    'Cooldown1%/s',
-    'Cooldown2%/s',
-    'CooldownCrouching%/s',
-    'CooldownSecondaryFire%/s',
     'UltimatesUsed/s',
     'RCP',
     'Position'

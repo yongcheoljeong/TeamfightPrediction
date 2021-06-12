@@ -3,13 +3,16 @@ from sqlalchemy import create_engine
 import pandas as pd 
 import mysql_auth
 
-NYXLDB_login = mysql_auth.NYXLDB_FinalStat # import NYXLDB_login auth info
-
 class MySQLConnection():
-    def __init__(self, input_df=None, dbname=NYXLDB_login['dbname'], hostname=NYXLDB_login['hostname'], username=NYXLDB_login['username'], pwd=NYXLDB_login['pwd'], port=NYXLDB_login['port']):
+    def __init__(self, input_df=None, DB_info=mysql_auth.NYXLDB_FinalStat):
         if input_df is None: 
             pass 
-
+        
+        dbname = DB_info['dbname']
+        hostname = DB_info['hostname']
+        username = DB_info['username']
+        pwd = DB_info['pwd']
+        port = DB_info['port']
         # define input_df
         self.input_df = input_df
         # dbname

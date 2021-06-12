@@ -6,27 +6,25 @@ import FeatureSelection
 import FeatureEngineering
 
 class Preprocessing:
-    def __init__(self):
-        self.ScrimLog = MySQLConnection()
+    def __init__(self, DB_info):
+        self.ScrimLog = MySQLConnection(DB_info=DB_info)
         self.DB_table_names = self.ScrimLog.get_table_names()
 
     def import_data(self):
         # make sql here 
         sql_union = ''
-        tablenames = [x for x in self.DB_table_names if (x.startswith('202105')) or (x.startswith('202106'))]
+        tablenames = self.DB_table_names #[x for x in self.DB_table_names if (x.startswith('202105')) or (x.startswith('202106'))]
         for tablename in tablenames: 
             if tablename is self.DB_table_names[-1]:
                 sql = f"""
                 SELECT `MatchId`, `Map`, `Section`, `Timestamp`, `Team`, `Player`, `Hero`, 
-                `UltimateCharge`, `Cooldown1%%/s`, `Cooldown2%%/s`, `CooldownCrouching%%/s`, `CooldownSecondaryFire%%/s`, 
-                `UltimatesUsed/s`, `TF_order`, `TF_winner`, `TF_RCP_sum`, `RCP`, `Position` from `{tablename}`;
+                `UltimateCharge`, `UltimatesUsed/s`, `TF_order`, `TF_winner`, `TF_RCP_sum`, `RCP`, `Position` from `{tablename}`;
                 """
                 sql_union = sql_union + sql 
             else:
                 sql = f"""
                 SELECT `MatchId`, `Map`, `Section`, `Timestamp`, `Team`, `Player`, `Hero`, 
-                `UltimateCharge`, `Cooldown1%%/s`, `Cooldown2%%/s`, `CooldownCrouching%%/s`, `CooldownSecondaryFire%%/s`, 
-                `UltimatesUsed/s`, `TF_order`, `TF_winner`, `TF_RCP_sum`, `RCP`, `Position` from `{tablename}`
+                `UltimateCharge`, `UltimatesUsed/s`, `TF_order`, `TF_winner`, `TF_RCP_sum`, `RCP`, `Position` from `{tablename}`
                 """
                 sql_union = sql_union + sql + ' UNION '
         print(sql_union)
@@ -46,7 +44,7 @@ class Preprocessing:
         input_df = FeatureEngineering.PositionInfo(input_df)
 
         # SkillUsed Timestamp
-        input_df = FeatureEngineering.SkillUsedTimestampInfo(input_df)
+        # input_df = FeatureEngineering.SkillUsedTimestampInfo(input_df)
 
         # Categorical Encoding
         input_df = FeatureEngineering.CategoricalEncoding(input_df)
@@ -75,7 +73,8 @@ class Preprocessing:
         df_merge = df_init
         for s in tqdm(range(1, time_shift)):
             df_shift = df_init.groupby(['MatchId', 'Map', 'Section', 'Team', 'Player']).shift(-s)
-            df_merge = pd.merge(df_merge, df_shift, how='inner', left_index=True, right_index=True, suffixes=('', f'_{s}') )
+            df_merge = pd.merge(df_merge, df_shift, how='inner', left_index=True, right_index=True, suffixes=('', f'_{s}'), copy=False)
+            del(df_shift)
         df_merge.dropna(inplace=True)
         df_pivot = df_merge.pivot_table(index=['MatchId', 'Map', 'Section', 'Timestamp'], columns=['Team', 'Player'])
         df_pivot.dropna(inplace=True)
