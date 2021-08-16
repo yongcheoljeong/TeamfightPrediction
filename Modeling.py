@@ -51,7 +51,7 @@ class ModelLSTM:
     def create_model(self):
         # Model structure
         model = tf.keras.models.Sequential()
-        model.add(tf.keras.layers.LSTM(50, activation = 'relu', input_shape=(self.X_train.shape[1], self.X_train.shape[2]))) # (timestep, feature)
+        model.add(tf.keras.layers.LSTM(10, activation = 'relu', input_shape=(self.X_train.shape[1], self.X_train.shape[2]))) # (timestep, feature)
         # DENSE와 사용법 동일하나 input_shape=(열, 몇개씩잘라작업)
         model.add(tf.keras.layers.Dropout(0.2))
         model.add(tf.keras.layers.Dense(20))
@@ -120,8 +120,12 @@ class ModelDNN:
     def create_model(self):
         # Model structure
         model = tf.keras.models.Sequential()
-        model.add(tf.keras.layers.Dense(4, activation = 'relu', input_shape=(self.X_train.shape[1], ))) # (feature,)
+        model.add(tf.keras.layers.Dense(8, activation = 'relu', input_shape=(self.X_train.shape[1], ))) # (feature,)
         model.add(tf.keras.layers.Dropout(0.5))
+        # model.add(tf.keras.layers.Dense(8, activation='sigmoid')) # binary classification
+        # model.add(tf.keras.layers.Dropout(0.5))
+        # model.add(tf.keras.layers.Dense(4, activation='sigmoid')) # binary classification
+        # model.add(tf.keras.layers.Dropout(0.5))
         model.add(tf.keras.layers.Dense(1, activation='sigmoid')) # binary classification
         # model.add(tf.keras.layers.Dense(self.y_train.shape[1], activation='softmax')) # multi-label
         model.summary()

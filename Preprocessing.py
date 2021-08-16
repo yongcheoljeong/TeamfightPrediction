@@ -107,7 +107,7 @@ class Preprocessing:
         hero_col = [x for x in input_df.columns if x.startswith('Hero')]
         df_init = input_df[hero_col+features+target]
         # extract start point of each teamfight
-        df_init = df_init.groupby(['MatchId', 'Map', 'Section', 'TF_order', 'Team', 'Player']).first()
+        df_init = df_init.groupby(['MatchId', 'Map', 'Section', 'Team', 'Player', 'TF_order']).first()
         print('#nan in df_init', df_init.isna().sum())
         # pivot
         df_pivot = df_init.pivot_table(index=['MatchId', 'Map', 'Section', 'TF_order'], columns=['Team', 'Player'])
